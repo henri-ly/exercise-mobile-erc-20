@@ -25,19 +25,17 @@ const TRY_HISTORY = [
 
 export default function HomeScreen(props) {
   const [address, setAddress] = useState("");
-  const [historyState, dispatchHistory] = useReducer(historyReducer, HISTORY);
 
   useEffect(() => {
     if (isValidEthereum(address)) {
       props.navigation.navigate("Wallet", { address });
-      dispatchHistory({ type: HISTORY_PUSH, payload: address });
+      if (historyState.indexOf(address) === -1) {
+        dispatchHistory({ type: HISTORY_PUSH, payload: address });
+      }
     }
   }, [address]);
 
-  const clearAndSetAddress = address => {
-    setAddress("");
-    setAddress(address);
-  };
+  const [historyState, dispatchHistory] = useReducer(historyReducer, HISTORY);
 
   return (
     <ScrollView
@@ -63,7 +61,7 @@ export default function HomeScreen(props) {
           renderItem={({ item }) => (
             <TouchableHighlight
               style={styles.button}
-              onPress={() => clearAndSetAddress(item)}
+              onPress={() => setAddress(item)}
             >
               <MonoText>{item}</MonoText>
             </TouchableHighlight>
@@ -80,7 +78,7 @@ export default function HomeScreen(props) {
           renderItem={({ item }) => (
             <TouchableHighlight
               style={styles.button}
-              onPress={() => clearAndSetAddress(item)}
+              onPress={() => setAddress(item)}
             >
               <MonoText>{item}</MonoText>
             </TouchableHighlight>
